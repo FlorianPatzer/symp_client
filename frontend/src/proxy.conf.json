@@ -1,0 +1,23 @@
+{
+    "/api": {
+        "target": "http://localhost:3000",
+        "secure": false,
+        "pathRewrite": {
+            "^/api": "backend"
+          },
+        "logLevel": "debug"
+    },
+    "/engine-rest":{
+        "target" : "http://localhost:8080",
+        "secure": false,
+        "logLevel": "debug"
+    },
+    "/sme": {
+        "target": "http://localhost:8544",
+        "secure": false,
+        "pathRewrite": {
+          "^/sme": "api"
+        },
+        "logLevel": "debug"
+      }
+}

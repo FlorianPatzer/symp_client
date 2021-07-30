@@ -1,0 +1,52 @@
+<div class="animated fadeIn">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <span class="float-left">
+                        <h1><b>Analyses Overview</b></h1>
+                    </span>
+                    <button class="btn btn-lg btn-success float-right" [routerLink]="['../setup']">
+                        <i class="fa fa-plus-square"></i>
+                        Create
+                    </button>
+                </div>
+            </div>
+
+            <hr>
+
+            <table class="table table-responsive-sm table-borderless table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th style="width:10%">
+                            <h4><b>Status</b></h4>
+                        </th>
+                        <th>
+                            <h4><b>Name</b></h4>
+                        </th>
+                        <th style="width: 60%;">
+                            <h4><b>Description</b></h4>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let analysis of analyses; index as i" (click)="view(analysis)">
+                        <td>
+                            <span
+                                [ngClass]="{'badge badge-success': analysisStatus[i] === 'Running', 'badge badge-secondary': analysisStatus[i] === 'Idle'}"
+                                style="font-size: 0.9em; width:60%;">{{analysisStatus[i]}}</span>
+                        </td>
+                        <td>{{analysis.name}}</td>
+                        <td>{{analysis.description}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between p-2">
+            <ngb-pagination [collectionSize]="ANALYSES_COLLECTION.length" [(page)]="analysisPage" [pageSize]="pageSize"
+                (pageChange)="refreshAnalysisTable()">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

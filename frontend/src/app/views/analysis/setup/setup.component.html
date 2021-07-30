@@ -1,0 +1,151 @@
+<div class="animated fadeIn">
+
+  <div class="card">
+    <div class="card-header">
+      <strong>{{operation}} Analysis</strong>
+    </div>
+    <div class="card-body">
+
+      <div *ngIf="analysis.engineURI.length == 0">
+        There is no active analysis engine. Please ask the administrator to configure the analysis engine settings in
+        the admin panel.
+      </div>
+
+      <div *ngIf="analysis.engineURI.length > 0">
+        <div class="row">
+          <div class="col">
+            <label for="engineURI">Active Engine URI</label>
+            <input type="text" disabled class="form-control" id="engineURI" placeholder="Name"
+              [(ngModel)]="analysis.engineURI">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <i>Note: This is the current active analysis engine. It can be changed by the administrator in the admin
+              panel.</i>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <label for="analysisName">Analysis Name</label>
+            <input type="text" class="form-control" id="analysisName" placeholder="Name" [(ngModel)]="analysis.name">
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <label for="analysisDescription">Analysis Description</label>
+            <textarea id="analysisDescription" name="analysisDescription" rows="4" class="form-control"
+              placeholder="Description" [(ngModel)]="analysis.description"></textarea>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <label for="targetSystem">Select target systen</label>
+            <select id="targetSystem" name="targetSystem" class="form-control" [(ngModel)]="analysis.targetSystemId">
+              <option *ngFor="let ts of targetSystems" [value]="ts.id">{{ts.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <label for="outputTemplate">Select output template</label>
+            <select id="outputTemplate" name="outputTemplate" class="form-control" [(ngModel)]='analysis.template'>
+              <option *ngFor="let template of templates" [value]="template.key">{{template.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <strong>Analysis Policies</strong>
+            <hr>
+          </div>
+        </div>
+
+        <div class="row mb-3" *ngFor="let policy of policyUrls; index as i;trackBy:trackByIndex;">
+          <div class="col">
+            <div class="row">
+              <div class="col-11">
+                <input type="text" class="form-control" id="policy" placeholder="Policy or bundle name"
+                  [(ngModel)]="this.policyUrls[i]" (ngModelChange)="checkEntry(i)">
+              </div>
+              <div class="col-1">
+                <button class="btn btn-danger btn" (click)="removeEntry(i)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="row mt-1">
+              <div class="col">
+                <div *ngIf="this.policyUrls[i].length > 0">
+                  <span *ngIf="!policyAvailability[i]" class="text-danger"><b>Policy not found</b></span>
+                  <span *ngIf="policyAvailability[i]" class="text-success"><b>Policy found</b></span>
+                </div>
+              </div>
+            </div>  
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-primary" (click)="addEntry()">Add new</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer" *ngIf="analysis.engineURI.length > 0">
+      <div class="row justify-content-center">
+        <div class="col-lg-3 col-md-6 my-2">
+          <button class="btn btn-success btn-block" (click)="doOperation(loadingModal)">{{operation}}</button>
+        </div>
+        <div class="col-lg-3 col-md-6 my-2">
+          <button class="btn btn-outline-danger btn-block" (click)="this.openModal(cancelModal)">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #cancelModal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Please confirm</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="decline()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col">
+          Are you sure you want to proceed? 
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-6"><button type="button" class="btn btn-outline-success btn-block"
+            (click)="confirm()">Yes</button></div>
+        <div class="col-6"><button type="button" class="btn btn-warning btn-block" (click)="decline()">No</button></div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #loadingModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Creating Analysis</h4>
+  </div>
+  <div class="modal-body">
+      <div class="d-flex justify-content-center text-info my-3">
+          <div class="spinner-border" role="status">
+              <span class="sr-only">Please wait...</span>
+          </div>
+      </div>
+  </div>
+</ng-template>

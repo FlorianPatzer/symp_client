@@ -1,0 +1,50 @@
+version: '3.3'
+
+services:
+    symp-mongo:
+        container_name: symp-mongo
+        image: mongo:4.4.6
+        ports:
+            - '27017:27017' # Expose port for backend -> in dev mode the server runs outside docker and has no access to the internal network
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: 'root'
+            MONGO_INITDB_ROOT_PASSWORD: '12ho4irhf'
+        networks:
+            - symp
+        restart: unless-stopped
+    
+    symp-client-frontend:
+        container_name: symp-client-frontend
+        build:
+            context: ./frontend
+            args:
+                - PROFILE=production
+        networks:
+            - symp
+        restart: unless-stopped
+
+    symp-client-backend:
+        container_name: symp-client-backend
+        build: ./backend
+        networks:
+            - symp
+        environment:
+            - PROD=true
+            - HTTPS=true
+            - SERVICE_ADDRESS=symp-client-backend # Must be the same as the container hostname
+        restart: unless-stopped
+
+    # Proxy the frontend und backend services to fix CORS issue 
+    symp-client-proxy:
+        image: nginx:latest
+        container_name: symp-client 
+        volumes:
+            - ./nginx/custom.conf:/etc/nginx/conf.d/custom.conf
+        networks:
+            - symp
+        restart: unless-stopped
+
+networks:
+    symp:
+        external:
+            name: symp

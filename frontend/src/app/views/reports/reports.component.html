@@ -1,0 +1,48 @@
+<div class="animated fadeIn">
+    <div class="card">
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <span class="float-left">
+                        <h1><b>Reports Overview</b></h1>
+                    </span>
+                </div>
+            </div>
+
+            <hr>
+            <table class="table table-responsive-sm table-borderless table-sm table-hover table-hove">
+                <thead>
+                    <tr>
+                        <th>
+                            <h4><b>For Analysis</b></h4>
+                        </th>
+                        <th>
+                            <h4><b>Started At</b></h4>
+                        </th>
+                        <th>
+                            <h4><b>Ended At</b></h4>
+                        </th>
+                        <th>
+                            <h4><b>Policeis</b></h4>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let report of reports; index as i" (click)="viewEntry(report)">
+                        <td>{{report.analysis.uuid}}</td>
+                        <td>{{report.startTime | date:'medium' }}</td>
+                        <td>{{report.startTime | date:'medium'}}</td>
+                        <td>{{report.policyAnalysisReportSet.length}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between p-2">
+            <ngb-pagination [collectionSize]="REPORTS_COLLECTION.length" [(page)]="reportPage" [pageSize]="pageSize"
+                (pageChange)="refreshReportsTable()">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

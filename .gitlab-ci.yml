@@ -1,0 +1,73 @@
+include:
+  - remote: https://ci-templates.k8s.ilt-dmz.iosb.fraunhofer.de/templates/gitlab-ci-common.yml
+
+default:
+  tags:
+    - ILT
+
+variables:
+  DOCKER_HOST: tcp://localhost:2375
+
+services:
+  - docker:18.09-dind
+  
+stages:
+  - build
+
+# Custom Job Definition
+.docker-frontend-build-master: &base_docker_build_latest
+  extends: .docker-build-frontend-common
+  only:
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.docker-frontend-build-branch: &base_docker_build_branch
+  extends: .docker-build-frontend-common
+  except:
+    variables:
+      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.docker-build-frontend-common:
+  stage: build
+  image: docker:latest
+  script:
+    - DOCKER_FILE_PATH_DEFAULT='./'
+    - DOCKER_FILE_DEFAULT='Dockerfile'
+    - DOCKER_FILE_PATH=${DOCKER_FILE_PATH:-$DOCKER_FILE_PATH_DEFAULT}
+    - DOCKER_FILE=${DOCKER_FILE:-$DOCKER_FILE_DEFAULT}
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build --build-arg PROFILE=k8s --no-cache --pull -t "$DOCKER_IMAGE_NAME" -f "$DOCKER_FILE_PATH$DOCKER_FILE" "$DOCKER_FILE_PATH"
+    - docker push "$DOCKER_IMAGE_NAME"
+
+frontend-master:
+  stage: build
+  environment:
+  variables:
+    DOCKER_FILE_PATH: ./frontend/
+    DOCKER_IMAGE_SUBPROJECT: /symp-client-frontend
+  extends:
+    - .docker-frontend-build-master
+
+frontend-branch:
+  stage: build
+  variables:
+    DOCKER_FILE_PATH: ./frontend/
+    DOCKER_IMAGE_SUBPROJECT: /symp-client-frontend
+  extends:
+    - .docker-frontend-build-branch
+
+backend-master:
+  stage: build
+  variables:
+    DOCKER_FILE_PATH: ./backend/
+    DOCKER_IMAGE_SUBPROJECT: /symp-client-backend
+  extends:
+    - .docker-build-master
+
+backend-branch:
+  stage: build
+  variables:
+    DOCKER_FILE_PATH: ./backend/
+    DOCKER_IMAGE_SUBPROJECT: /symp-client-backend
+  extends:
+    - .docker-build-branch

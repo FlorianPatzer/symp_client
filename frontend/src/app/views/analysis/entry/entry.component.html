@@ -1,0 +1,99 @@
+<div class="animated fadeIn">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-5">
+                    <h1 class="card-title mb-0"><strong>{{analysis.name}}</strong></h1>
+                </div>
+                <!--/.col-->
+                <div class="col-sm-7 d-none d-md-block">
+                    <button class="btn btn-lg btn-danger float-right" (click)="delete()">
+                        <i class="fa fa-trash"></i> Delete</button>
+                </div>
+                <!--/.col-->
+            </div>
+            <!--/.row-->
+
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="control-group">
+                        <label class="control-label"><strong>Description: </strong></label>
+                        <label class="control-label">{{analysis.description}}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label"><strong>Target system: </strong></label>
+                        <label class="control-label">{{targetSystem.name}}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label"><strong>Created At: </strong></label>
+                        <label class="control-label">{{analysis.createdAt | date:'medium'}}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label"><strong>Created By: </strong></label>
+                        <label class="control-label">{{analysis.createdBy}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <strong>Analysis Policies:</strong>
+                </div>
+            </div>
+
+            <div class="row" *ngFor="let policy of ontoDependencies; index as i">
+                <div class="col">
+                    <hr>
+                    <div class="control-group">
+                        <label class="control-label"><strong>Name:</strong></label>
+                        <label class="control-label">{{policy.localName}}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label"><strong>Description:</strong></label>
+                        <label class="control-label">{{policy.description}}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label"><strong>URI:</strong></label>
+                        <label class="control-label">{{policy.uri}}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label"><strong>Options:</strong></label>
+                        <label class="control-label">Parse policy name, make request to the hub, extract policy options
+                            and present them to the analyst here.</label>
+                    </div>
+                    <div class="control-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" [id]="'customSwitch'+i">
+                            <label class="custom-control-label" [for]="'customSwitch'+i">Online</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="row justify-content-center">
+                <div class="col-lg-3 col-md-6 my-2">
+                    <button class="btn btn-success btn-block" (click)="run(loadingModal)"><i class="fa fa-play"></i>
+                        Run</button>
+                </div>
+                <div class="col-lg-3 col-md-6 my-2">
+                    <button class="btn btn-warning btn-block" (click)="edit()"><i class="fa fa-edit"></i> Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Starting Analysis</h4>
+    </div>
+    <div class="modal-body">
+        <div class="d-flex justify-content-center text-info my-3">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Please wait...</span>
+            </div>
+        </div>
+    </div>
+</ng-template>

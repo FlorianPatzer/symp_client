@@ -1,0 +1,1256 @@
+openapi: 3.0.0
+info:
+  title: SyMP-Client-API
+  version: '1.0'
+  description: SyMP Client Backend API Description
+servers:
+  - url: 'http://localhost:3000/api'
+    description: DEV
+  - url: 'https://localhost/api'
+    description: PROD
+paths:
+  /user/register:
+    parameters: []
+    post:
+      summary: ''
+      operationId: post-user-register
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  role:
+                    type: string
+                  status:
+                    type: string
+                required:
+                  - userId
+                  - role
+                  - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+              required:
+                - fullName
+                - username
+                - password
+                - role
+      security:
+        - sessionCookie: []
+        - role: []
+  /user/changePassword:
+    post:
+      summary: ''
+      operationId: post-user-changePassword
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  userId:
+                    type: string
+                required:
+                  - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                newPassword:
+                  type: string
+              required:
+                - password
+                - newPassword
+        description: ''
+      security:
+        - sessionCookie: []
+  '/user/{username}':
+    parameters:
+      - schema:
+          type: string
+        name: username
+        in: path
+        required: true
+    delete:
+      summary: ''
+      operationId: delete-user-userId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  '':
+                    type: string
+      description: Delete a user
+      security:
+        - sessionCookie: []
+        - role: []
+  /user/login:
+    post:
+      summary: ''
+      operationId: post-user-login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  userId:
+                    type: string
+                  role:
+                    type: string
+                  fullName:
+                    type: string
+                required:
+                  - status
+                  - userId
+                  - role
+                  - fullName
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      description: User login
+  /user/logout:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  userId:
+                    type: string
+                required:
+                  - status
+      operationId: get-user-logout
+      description: User logout
+      security:
+        - sessionCookie: []
+  /report:
+    post:
+      summary: ''
+      operationId: post-report
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  reportId:
+                    type: string
+                required:
+                  - status
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forAnalysisName:
+                  type: string
+                forAnalysisId:
+                  type: string
+                startedAt:
+                  type: string
+                endedAt:
+                  type: string
+                startedBy:
+                  type: string
+                executedPoliciesCount:
+                  type: string
+                complieancesCount:
+                  type: number
+                contradictionsCount:
+                  type: number
+                template:
+                  type: string
+                output:
+                  type: object
+              required:
+                - forAnalysisName
+                - forAnalysisId
+                - startedAt
+                - endedAt
+                - startedBy
+                - executedPoliciesCount
+                - complieancesCount
+                - contradictionsCount
+                - template
+                - output
+            examples:
+              example-1:
+                value:
+                  forAnalysisName: string
+                  forAnalysisId: string
+                  startedAt: string
+                  endedAt: string
+                  startedBy: string
+                  executedPoliciesCount: string
+                  complieancesCount: 0
+                  contradictionsCount: 0
+                  template: string
+                  output: {}
+      description: Create a new report
+      parameters: []
+      security:
+        - token: []
+    get:
+      summary: ''
+      operationId: get-report
+      description: Get all of the reports saved in the client's database
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: ''
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - _id
+                    - forAnalysisName
+                    - forAnalysisId
+                    - startedAt
+                    - endedAt
+                    - startedBy
+                    - executedPoliciesCount
+                    - complieancesCount
+                    - contradictionsCount
+                    - template
+                    - output
+                  properties:
+                    _id:
+                      type: string
+                      minLength: 1
+                    forAnalysisName:
+                      type: string
+                      minLength: 1
+                    forAnalysisId:
+                      type: string
+                      minLength: 1
+                    startedAt:
+                      type: string
+                      minLength: 1
+                    endedAt:
+                      type: string
+                      minLength: 1
+                    startedBy:
+                      type: string
+                      minLength: 1
+                    executedPoliciesCount:
+                      type: number
+                    complieancesCount:
+                      type: number
+                    contradictionsCount:
+                      type: number
+                    template:
+                      type: string
+                      minLength: 1
+                    output:
+                      type: object
+                      properties: {}
+                      required: []
+              examples: {}
+        '500':
+          description: Internal Server Error
+  '/report/{reportId}':
+    parameters:
+      - schema:
+          type: string
+        name: reportId
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '500':
+          description: Internal Server Error
+      operationId: get-report-reportId
+      description: Get the data of a specific report by it's id
+      security:
+        - sessionCookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                _id:
+                  type: string
+                  minLength: 1
+                forAnalysisName:
+                  type: string
+                  minLength: 1
+                forAnalysisId:
+                  type: string
+                  minLength: 1
+                startedAt:
+                  type: string
+                  minLength: 1
+                endedAt:
+                  type: string
+                  minLength: 1
+                startedBy:
+                  type: string
+                  minLength: 1
+                executedPoliciesCount:
+                  type: number
+                complieancesCount:
+                  type: number
+                contradictionsCount:
+                  type: number
+                template:
+                  type: string
+                  minLength: 1
+                output:
+                  type: object
+                  properties: {}
+                  required: []
+              required:
+                - _id
+                - forAnalysisName
+                - forAnalysisId
+                - startedAt
+                - endedAt
+                - startedBy
+                - executedPoliciesCount
+                - complieancesCount
+                - contradictionsCount
+                - template
+                - output
+    delete:
+      summary: ''
+      operationId: delete-report-reportId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  reportId:
+                    type: string
+                required:
+                  - status
+                  - reportId
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+      description: Delete a specific report by it's id
+      security:
+        - sessionCookie: []
+  /engine/register:
+    post:
+      summary: ''
+      operationId: post-engine-register
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  reportId:
+                    type: string
+                required:
+                  - status
+                  - reportId
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+      description: Register the app in a new engine and also save the engine in the app db
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                subscribedAs:
+                  type: string
+                  minLength: 1
+                token:
+                  type: string
+                  minLength: 1
+                cert:
+                  type: string
+                  minLength: 1
+                listen:
+                  type: boolean
+                uuid:
+                  type: string
+                  minLength: 1
+              required:
+                - subscribedAs
+                - token
+                - cert
+                - listen
+                - uuid
+  /engine/activate:
+    post:
+      summary: ''
+      operationId: post-engine-activate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  engineId:
+                    type: string
+                required:
+                  - status
+                  - engineId
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+              required:
+                - _id
+      security:
+        - sessionCookie: []
+        - role: []
+      description: Make a registered engine the current active one
+  /engine/deactivate:
+    post:
+      summary: ''
+      operationId: post-engine-deactivate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+      description: Deactivate the current active engine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      security:
+        - sessionCookie: []
+        - role: []
+  /engine:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: ''
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - _id
+                    - subscribedAs
+                    - token
+                    - cert
+                    - listen
+                    - uuid
+                  properties:
+                    _id:
+                      type: string
+                      minLength: 1
+                    subscribedAs:
+                      type: string
+                      minLength: 1
+                    token:
+                      type: string
+                      minLength: 1
+                    cert:
+                      type: string
+                      minLength: 1
+                    listen:
+                      type: boolean
+                    uuid:
+                      type: string
+                      minLength: 1
+      operationId: get-engine
+      security:
+        - sessionCookie: []
+      description: Get all engines
+    delete:
+      summary: ''
+      operationId: delete-engine
+      responses:
+        '200':
+          description: OK
+  /engine/status:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+      operationId: get-engine-status
+      description: Get the app status in the current active engine
+      security:
+        - sessionCookie: []
+  '/engine/status/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+      operationId: get-engine-status-id
+      description: Get the app status in the specified engine
+      security:
+        - sessionCookie: []
+  /analysis:
+    put:
+      summary: ''
+      operationId: put-analysis
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analysisId:
+                    type: string
+                  status:
+                    type: string
+                required:
+                  - analysisId
+                  - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  '':
+                    type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+      description: Endpoint for analysis update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                _id:
+                  type: string
+                  minLength: 1
+                createdBy:
+                  type: string
+                  minLength: 1
+                createdAt:
+                  type: string
+                  minLength: 1
+                description:
+                  type: string
+                  minLength: 1
+                targetSystem:
+                  type: string
+                  minLength: 1
+                template:
+                  type: string
+                  minLength: 1
+                engineURI:
+                  type: string
+                  minLength: 1
+                containedPolicies:
+                  type: array
+                  uniqueItems: true
+                  minItems: 1
+                  items:
+                    required: []
+                    properties: {}
+              required:
+                - _id
+                - createdBy
+                - createdAt
+                - description
+                - targetSystem
+                - template
+                - engineURI
+                - containedPolicies
+      security:
+        - sessionCookie: []
+    post:
+      summary: ''
+      operationId: post-analysis
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analysisId:
+                    type: string
+                  status:
+                    type: string
+                required:
+                  - analysisId
+                  - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  '':
+                    type: string
+                required:
+                  - status
+      security:
+        - sessionCookie: []
+      description: Endpoint for analysis creation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                _id:
+                  type: string
+                  minLength: 1
+                createdBy:
+                  type: string
+                  minLength: 1
+                createdAt:
+                  type: string
+                  minLength: 1
+                description:
+                  type: string
+                  minLength: 1
+                targetSystem:
+                  type: string
+                  minLength: 1
+                template:
+                  type: string
+                  minLength: 1
+                engineURI:
+                  type: string
+                  minLength: 1
+                containedPolicies:
+                  type: array
+                  items:
+                    required: []
+                    properties: {}
+              required:
+                - _id
+                - createdBy
+                - createdAt
+                - description
+                - targetSystem
+                - template
+                - engineURI
+                - containedPolicies
+            examples: {}
+    get:
+      summary: ''
+      operationId: get-analysis
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: ''
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - _id
+                    - createdBy
+                    - createdAt
+                    - description
+                    - targetSystem
+                    - template
+                    - engineURI
+                    - containedPolicies
+                  properties:
+                    _id:
+                      type: string
+                      minLength: 1
+                    createdBy:
+                      type: string
+                      minLength: 1
+                    createdAt:
+                      type: string
+                      minLength: 1
+                    description:
+                      type: string
+                      minLength: 1
+                    targetSystem:
+                      type: string
+                      minLength: 1
+                    template:
+                      type: string
+                      minLength: 1
+                    engineURI:
+                      type: string
+                      minLength: 1
+                    containedPolicies:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required: []
+                        properties: {}
+        '500':
+          description: Internal Server Error
+      description: Get all analyses
+      security:
+        - sessionCookie: []
+  '/analysis/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    minLength: 1
+                  createdBy:
+                    type: string
+                    minLength: 1
+                  createdAt:
+                    type: string
+                    minLength: 1
+                  description:
+                    type: string
+                    minLength: 1
+                  targetSystem:
+                    type: string
+                    minLength: 1
+                  template:
+                    type: string
+                    minLength: 1
+                  engineURI:
+                    type: string
+                    minLength: 1
+                  containedPolicies:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required: []
+                      properties: {}
+                required:
+                  - _id
+                  - createdBy
+                  - createdAt
+                  - description
+                  - targetSystem
+                  - template
+                  - engineURI
+                  - containedPolicies
+        '500':
+          description: Internal Server Error
+      operationId: get-analysis-id
+      description: Get the data of the specified analysis
+      security:
+        - sessionCookie: []
+  '/analysis/start/{analysisId}':
+    parameters:
+      - schema:
+          type: string
+        name: analysisId
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-analysis-start-analysisId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    minLength: 1
+                  createdBy:
+                    type: string
+                    minLength: 1
+                  createdAt:
+                    type: string
+                    minLength: 1
+                  description:
+                    type: string
+                    minLength: 1
+                  targetSystem:
+                    type: string
+                    minLength: 1
+                  template:
+                    type: string
+                    minLength: 1
+                  engineURI:
+                    type: string
+                    minLength: 1
+                  containedPolicies:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                required:
+                  - _id
+                  - createdBy
+                  - createdAt
+                  - description
+                  - targetSystem
+                  - template
+                  - engineURI
+                  - containedPolicies
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+      description: Start created analysis
+      security:
+        - sessionCookie: []
+components:
+  schemas:
+    User:
+      description: ''
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        role:
+          type: string
+          minLength: 1
+        createdBy:
+          type: string
+          minLength: 1
+        createdAt:
+          type: string
+          minLength: 1
+        _id:
+          type: string
+          minLength: 1
+      required:
+        - fullName
+        - username
+        - password
+        - role
+        - createdBy
+        - createdAt
+      x-examples: {}
+    Report:
+      title: Report
+      type: object
+      properties:
+        _id:
+          type: string
+        forAnalysisName:
+          type: string
+        forAnalysisId:
+          type: string
+        startedAt:
+          type: string
+        endedAt:
+          type: string
+        startedBy:
+          type: string
+        executedPoliciesCount:
+          type: number
+        complieancesCount:
+          type: number
+        contradictionsCount:
+          type: number
+        template:
+          type: string
+        output:
+          type: object
+      required:
+        - forAnalysisName
+        - forAnalysisId
+        - startedAt
+        - endedAt
+        - startedBy
+        - executedPoliciesCount
+        - complieancesCount
+        - contradictionsCount
+        - template
+        - output
+      x-examples: {}
+    Engine:
+      title: Engine
+      type: object
+      properties:
+        _id:
+          type: string
+        subscribedAs:
+          type: string
+        token:
+          type: string
+        cert:
+          type: string
+        listen:
+          type: boolean
+        uuid:
+          type: string
+      x-examples: {}
+    Analysis:
+      title: Analysis
+      type: object
+      properties:
+        _id:
+          type: string
+        createdBy:
+          type: string
+        createdAt:
+          type: string
+        description:
+          type: string
+        targetSystem:
+          type: string
+        template:
+          type: string
+        engineURI:
+          type: string
+        containedPolicies:
+          type: array
+          items: {}
+      x-examples: {}
+  securitySchemes:
+    token:
+      name: JWT for the analysis engine generated at app registration
+      type: apiKey
+      in: header
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: Received at login
+    role:
+      type: apiKey
+      in: query
+      name: User role queried in the back-end for each request

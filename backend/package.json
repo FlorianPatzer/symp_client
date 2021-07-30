@@ -1,0 +1,45 @@
+{
+  "name": "nodejs-login-passport",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios-cookiejar-support": "^1.0.1",
+    "bcrypt": "5.0.0",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.5",
+    "crypto-js": "^4.0.0",
+    "express": "^4.16.4",
+    "express-dynamic-middleware": "^1.0.0",
+    "express-http-proxy": "^1.6.2",
+    "express-rate-limit": "^5.2.3",
+    "express-session": "^1.15.6",
+    "express-slow-down": "^1.4.0",
+    "express-validation": "^3.0.6",
+    "express-validator": "^6.9.2",
+    "http": "^0.0.1-security",
+    "http-proxy-middleware": "^1.0.6",
+    "http-request": "^0.7.0",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.3.9",
+    "node-gyp": "^7.1.2",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "tough-cookie": "^4.0.0"
+  },
+  "devDependencies": {
+    "axios": "^0.21.0",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1",
+    "nodemon": "^1.19.4"
+  }
+}

@@ -1,0 +1,66 @@
+<div class="row mt-3">
+    <div class="col-2">
+        Report ID:
+    </div>
+    <div class="col">
+        {{data._id}}
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-2">
+        For Analysis:
+    </div>
+    <div class="col">
+        {{data.analysis.uuid}}
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-2">
+        Policeis:
+    </div>
+    <div class="col">
+        {{data.policyAnalysisReportSet.length}}
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-2">
+        Duration:
+    </div>
+    <div class="col">
+        {{data.startTime|date:'medium'}} - {{data.finishTime|date:'medium'}}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col">
+        <h3>Reports:</h3>
+    </div>
+</div>
+
+<hr>
+
+<div class="row mt-3">
+    <div class="col">
+        <table class="table table-responsive-sm table-borderless table-sm">
+            <thead>
+                <tr>
+                    <th>
+                        <b>Policy Analysis</b>
+                    </th>
+                    <th>
+                        <b>Report</b>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let set of data.policyAnalysisReportSet">
+                    <td>{{set.policyAnalysis.name}}</td>
+                    <td>{{set.report}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
