@@ -114,7 +114,7 @@ In the case of the SyMP-Client, it's backend has to communicate with Security An
 
 2. Securing the endpoints. 
 
-   The current docker configuration uses nginx as a reverse proxy to expose the frontend and backend on one address. However the communication between the backend and a SAE is done internally in the docker network. This creates the need for two keypairs respectively two certificates. The first one for encrypting the external network communication (nginx) and the second one for the internal communications between the client and the SAE (**TODO: does this make any sense?**). The follwoing two steps must be done in order to create the certificates.
+   The current docker configuration uses nginx as a reverse proxy to expose the frontend and backend on one address. However the communication between the backend and a SAE is done internally in the docker network. This creates the need for two keypairs respectively two certificates. The first one is for encrypting the external network communication (nginx) and the second one for the internal communications between the client and the SAE. The follwoing two steps must be done in order to create the certificates.
 
    Run the bash script in **/nginx** folder and give the public address of the server (or localhost if it's running locally).
 
