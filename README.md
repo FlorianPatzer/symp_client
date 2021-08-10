@@ -157,4 +157,4 @@ Each combination of an entry from the left and an entry from the right is possib
  ## Contributors
  Florian Patzer <florian.patzer@iosb.fraunhofer.de>
 
- Nikolay Penkov <nikolay.penkov@iosb.fraunhofer.de>
+ Nikolay Penkov <n.penkow@gmail.com>
