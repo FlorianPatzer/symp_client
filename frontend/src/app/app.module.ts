@@ -50,6 +50,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { AdminComponent } from './views/admin/admin.component';
 import { LogoutComponent } from './views/logout/logout.component';
 
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+
 declare module "@angular/core" {
   interface ModuleWithProviders<T = any> {
     ngModule: Type<T>;
@@ -80,7 +82,8 @@ declare module "@angular/core" {
       autoDismiss: true
     }),
     ModalModule.forRoot(),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxSkeletonLoaderModule
   ],
   declarations: [
     AppComponent,

@@ -15,25 +15,21 @@
                 <thead>
                     <tr>
                         <th>
+                            <h4><b>Created At</b></h4>
+                        </th>
+                        <th>
+                            <h4><b>From Engine</b></h4>
+                        </th>
+                        <th>
                             <h4><b>For Analysis</b></h4>
-                        </th>
-                        <th>
-                            <h4><b>Started At</b></h4>
-                        </th>
-                        <th>
-                            <h4><b>Ended At</b></h4>
-                        </th>
-                        <th>
-                            <h4><b>Policeis</b></h4>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let report of reports; index as i" (click)="viewEntry(report)">
-                        <td>{{report.analysis.uuid}}</td>
-                        <td>{{report.startTime | date:'medium' }}</td>
-                        <td>{{report.startTime | date:'medium'}}</td>
-                        <td>{{report.policyAnalysisReportSet.length}}</td>
+                        <td>{{report.createdAt | date:'short'}}</td>
+                        <td>{{report.engineURI}}</td>
+                        <td>{{report.analysisId}}</td>
                     </tr>
                 </tbody>
             </table>

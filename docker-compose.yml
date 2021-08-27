@@ -29,8 +29,8 @@ services:
         networks:
             - symp
         environment:
-            - PROD=true
-            - HTTPS=true
+            - PROD=1
+            - HTTPS=1
             - SERVICE_ADDRESS=symp-client-backend # Must be the same as the container hostname
         restart: unless-stopped
 

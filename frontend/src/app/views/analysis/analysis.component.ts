@@ -18,9 +18,10 @@ export class AnalysisComponent implements OnInit {
   }
 
   view(analysis) {
-    this.router.navigate(["/analysis/entry/" + analysis._id]);
+    this.router.navigate(["/analysis/entry/" + analysis.id]);
   }
 
+  loadingData = true;
   analyses: IAnalysis[] = [];
   analysisStatus = [];
   ANALYSES_COLLECTION = [];
@@ -37,8 +38,9 @@ export class AnalysisComponent implements OnInit {
     this.analysisService.getAllAnalysisData()
       .then((analsesData) => {
         this.ANALYSES_COLLECTION = analsesData;
+        this.loadingData = false;
         this.ANALYSES_COLLECTION.forEach(analysis => {
-          this.analysisService.checkAnalysisStatus(analysis._id).then(res=>{
+          this.analysisService.checkAnalysisStatus(analysis.id).then(res=>{
             this.analysisStatus.push(res.status);
           })
         });

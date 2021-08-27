@@ -17,7 +17,7 @@ import { SmeService } from '../../../services/sme.service';
 })
 export class EntryComponent implements OnInit {
 
-  analysis: IAnalysis = { name: '', description: '', template: 'test-template', targetSystemId: "", containedPolicies: [], engineURI: '' };
+  analysis: IAnalysis = { id: null, name: '', description: '', template: 'test-template', targetSystemId: "", containedPolicies: [], engineURI: '' };
   targetSystem: ITragetSystem = { id: null, name: "", tasks: [], ontologyDependencies: [], ontologyPath: "" };
   ontoDependencies: IPolicy[] = [];
 
@@ -43,7 +43,7 @@ export class EntryComponent implements OnInit {
         })
       })
 
-      if (!this.analysis._id) {
+      if (!this.analysis.id) {
         this.toastr.error("Analysis doesn't exist", "Error")
         this.route.navigate(['analysis'])
       }
@@ -57,7 +57,7 @@ export class EntryComponent implements OnInit {
 
   run(loadingModal) {
     let modalRef = this.modalService.open(loadingModal);
-    this.analysisService.startAnalysis(this.analysis._id)
+    this.analysisService.startAnalysis(this.analysis.id)
       .then(res => {
         modalRef.close();
       }).catch(err => {
@@ -66,11 +66,11 @@ export class EntryComponent implements OnInit {
   }
 
   edit() {
-    this.route.navigate(['analysis/setup/' + this.analysis._id])
+    this.route.navigate(['analysis/setup/' + this.analysis.id])
   }
 
   delete() {
-    this.analysisService.deleteAnalysis(this.analysis._id).then(res => {
+    this.analysisService.deleteAnalysis(this.analysis.id).then(res => {
       this.route.navigate(['/analysis'])
     })
   }

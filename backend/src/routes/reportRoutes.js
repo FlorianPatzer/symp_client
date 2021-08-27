@@ -30,7 +30,6 @@ const reportValidation = {
 //validate(reportValidation),
 router.post('/', (req, res, next) => {
     let engineToken = req.headers.token;
-    let reportId = req.body.reportId;
 
     // TODO: Implement token validation and engine check as a middleware
     try {
@@ -39,33 +38,21 @@ router.post('/', (req, res, next) => {
 
         Engine.findOne({ uuid: engineUuid })
             .then(engineData => {
-                let localAgent = new https.Agent({
-                    ca: new TextEncoder().encode(engineData.cert)
-                });
 
-                axios.get(engineData.URI + "/report/" + reportId, { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
+                let report = new Report();
+                report.id = req.body.reportId;
+                report.analysisId = req.body.analysisId;
+                report.engineURI = engineData.URI;
+                report.createdAt = new Date();
 
-                    let report = new Report();
-                    report.id = response.data.id;
-                    report.analysis = response.data.analysis;
-                    report.startTime = response.data.startTime;
-                    report.finishTime = response.data.finishTime;
-                    report.policyAnalysisReportSet = response.data.policyAnalysisReportSet;
-                    report.engineURI = engineData.URI;
-
-                    report.save()
-                        .then(data => {
-                            res.send({ reportId: data._id, status: "Report was created successfully" })
-                        })
-                        .catch(err => {
-                            console.log(err)
-                            res.status(500).send({ status: "Report creation failed" })
-                        });
-
-                }).catch(err => {
-                    console.log(err);
-                    res.status(500).send({ status: "Retrieving report data from the engine failed." });
-                })
+                report.save()
+                    .then(data => {
+                        res.send({ reportId: data._id, status: "Report was created successfully" })
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        res.status(500).send({ status: "Report creation failed" })
+                    });
             })
             .catch(err => {
                 console.log(err);
@@ -78,68 +65,86 @@ router.post('/', (req, res, next) => {
 
 })
 
-router.post('/mock', (req, res, next) => {
-    let report = new Report();
-    report.id = req.body.id;
-    report.analysis = req.body.analysis;
-    report.startTime = req.body.startTime;
-    report.finishTime = req.body.finishTime;
-    report.policyAnalysisReportSet = req.body.policyAnalysisReportSet;
-
-    report.save()
-        .then(data => {
-            res.send({ reportId: data._id, status: "Report was created successfully" })
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(500).send({ status: "Report creation failed" })
-        });
-})
-
 router.delete('/:reportId', customMiddleware.isAuthenticated, async (req, res) => {
     let reportId = req.params.reportId;
-    if (mongoose.Types.ObjectId.isValid(reportId)) {
-        Report.findOneAndDelete({ _id: reportId }).then(data => {
-            if (data) {
-                res.send({ reportId: data._id, status: "Report deleted" })
-            }
-            else {
-                res.status(400).send({ status: "Report deletion failed" })
-            }
-        }).catch(err => {
-            console.log(err);
-            res.status(500).send({ status: "Report deletion failed" })
-        })
-    }
-    else {
-        res.status(400).send({ status: "Invalid Id" })
-    }
+
+    Report.findOneAndDelete({ id: reportId }).then(data => {
+        if (data) {
+            res.send({ reportId: data._id, status: "Report deleted" })
+        }
+        else {
+            res.status(400).send({ status: "Report deletion failed" })
+        }
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({ status: "Report deletion failed" })
+    })
+
 })
 
 router.get('/:reportId', customMiddleware.isAuthenticated, async (req, res) => {
+    let reqFromEngine = req.query.engine;
     let reportId = req.params.reportId;
-    if (mongoose.Types.ObjectId.isValid(reportId)) {
-        Report.findOne({ _id: reportId })
-            .then(data => res.send(data))
+
+    Report.findOne({ id: reportId })
+        .then(report => {
+            if (reqFromEngine) {
+                helpers.getActiveEngine()
+                    .then(engineData => {
+                        let localAgent = new https.Agent({
+                            ca: new TextEncoder().encode(engineData.cert)
+                        });
+
+                        axios.get(report.engineURI + "/report/" + reportId, { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
+                            res.send(response.data);
+                        }).catch(err => {
+                            console.log(err);
+                            res.status(500).send({ status: "Retrieving report data from the engine failed." });
+                        });
+                    });
+            }
+            else {
+                res.send(report);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send();
+        });
+})
+
+router.get('/', async (req, res) => {
+    let reqFromEngine = req.query.engine;
+    if (reqFromEngine) {
+        helpers.getActiveEngine()
+            .then(engineData => {
+                let localAgent = new https.Agent({
+                    ca: new TextEncoder().encode(engineData.cert)
+                });
+
+                axios.get(engineData.URI + "/report", { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
+                    res.send(response.data);
+                }).catch(err => {
+                    console.log(err);
+                    res.status(500).send({ status: "Retrieving report data from the engine failed." });
+                });
+            })
             .catch(err => {
                 console.log(err);
                 res.status(500).send();
             })
     }
     else {
-        res.send({ status: "Invalid Id" })
-    }
-})
+        Report.find({})
+            .then(reports => {
+                res.send(reports);
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).send();
+            })
 
-router.get('/', customMiddleware.isAuthenticated, async (req, res) => {
-    Report.find({})
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send();
-        })
+    }
 })
 
 module.exports = router;

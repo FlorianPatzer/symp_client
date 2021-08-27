@@ -62,29 +62,18 @@ function checkOrCreatePolicyUrl(clientUrl) {
     })
 }
 
-
 router.post('/', customMiddleware.isAuthenticated, validate(analysisValidation), (req, res, next) => {
     let userId = req.session.passport.user;
     if (mongoose.Types.ObjectId.isValid(userId)) {
         User.findOne({ _id: userId })
             .then(user => {
-                let analysis = new Analysis();
-
-                analysis.name = req.body.name;
-                analysis.createdBy = user.fullName;
-                analysis.createdAt = new Date();
-                analysis.description = req.body.description;
-                analysis.targetSystemId = req.body.targetSystemId;
-                analysis.containedPolicies = req.body.containedPolicies;
-                analysis.template = req.body.template;
-                analysis.engineURI = req.body.engineURI;
+                let analysisRequest = req.body;
 
                 let dataForSAE = {
-                    uuid: "",
-                    name: analysis.name,
-                    description: req.body.description,
-                    targetSystemId: req.body.targetSystemId,
-                    policyAnalyses: req.body.containedPolicies
+                    name: analysisRequest.name,
+                    description: analysisRequest.description,
+                    targetSystemId: analysisRequest.targetSystemId,
+                    policyAnalyses: analysisRequest.containedPolicies
                 };
 
                 helpers.getActiveEngine().then(engineData => {
@@ -93,21 +82,29 @@ router.post('/', customMiddleware.isAuthenticated, validate(analysisValidation),
                             ca: new TextEncoder().encode(engineData.cert)
                         });
 
-                        analysis.save()
-                            .then(analysisData => {
-                                dataForSAE.uuid = analysisData._id;
+                        axios.post(engineData.URI + "/analysis", dataForSAE, { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
+                            let analysis = helpers.createAnalysisiObject(analysisRequest.name, response.data.analysisId, user.fullName, new Date(), analysisRequest.description, analysisRequest.targetSystemId, analysisRequest.containedPolicies, analysisRequest.template, analysisRequest.engineURI);
 
-                                axios.post(engineData.URI + "/analysis", dataForSAE, { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
-                                    res.send({ analysisId: analysisData._id, status: "Analysis was created successfully" });
-                                }).catch(err => {
-                                    console.log(err);
-                                    analysis.delete();
-                                    res.status(400).send({ analysisId: analysisData._id, status: "Analysis can't be created. Check backend log for more information." });
+                            analysis.save()
+                                .then(analysisData => {
+                                    res.send({ analysisId: response.data.analysisId, status: "Analysis was created successfully" });
                                 })
-                            })
-                            .catch(err => {
-                                res.status(400).send({ analysisId: null, status: "Analysis creation failed" });
-                            })
+                                .catch(err => {
+                                    res.status(400).send({ analysisId: null, status: "Analysis creation failed" });
+                                });
+
+                        }).catch(err => {
+                            let statusCode = err.response.status;
+                            if (statusCode == 409) {
+                                let responseData = err.response.data;
+                                res.status(409).send({ analysisId: responseData.analysisId, status: responseData.status });
+                            }
+                            else {
+                                console.log(err);
+                                res.status(400).send({ analysisId: null, status: "Analysis can't be created. Check backend log for more information." });
+                            }
+                        })
+
                     }
                     else {
                         res.status(400).send({ analysisId: data._id, status: "Analysis can't be created. There is no active engine" });
@@ -125,22 +122,38 @@ router.post('/', customMiddleware.isAuthenticated, validate(analysisValidation),
 
 router.delete('/:analysisId', customMiddleware.isAuthenticated, async (req, res) => {
     let analysisId = req.params.analysisId;
-    if (mongoose.Types.ObjectId.isValid(analysisId)) {
-        Analysis.findOneAndDelete({ _id: analysisId }).then(data => {
+
+    Analysis.findOneAndDelete({ id: analysisId })
+        .then(data => {
             if (data) {
-                res.send({ analysisId: data._id, status: "Analysis deleted" });
+                helpers.getActiveEngine().then(engineData => {
+                    if (engineData) {
+                        let localAgent = new https.Agent({
+                            ca: new TextEncoder().encode(engineData.cert)
+                        });
+
+                        axios.post(engineData.URI + "/analysis/" + analysisId + "/unsubscribe", {}, { httpsAgent: localAgent, headers: { token: engineData.token } })
+                            .then(async (response) => {
+                                res.send({ analysisId: data.id, status: "Unsubscribed and deleted locally" });
+                            }).catch(err => {
+                                console.log(err);
+                                res.status(400).send({ status: "Check backend log for more information." });
+                            })
+
+                    }
+                    else {
+                        res.status(400).send({ status: "Analysis can't be deleted. There is no active engine" });
+                    }
+                });
             }
             else {
                 res.status(400).send({ status: "Analysis deletion failed" });
             }
-        }).catch(err => {
+        })
+        .catch(err => {
             console.log(err);
             res.status(500).send({ status: "Analysis deletion failed" });
-        })
-    }
-    else {
-        res.status(400).send({ status: "Invalid Id" });
-    }
+        });
 })
 
 router.put('/', customMiddleware.isAuthenticated, validate(analysisValidation), async (req, res) => {
@@ -166,10 +179,10 @@ router.put('/', customMiddleware.isAuthenticated, validate(analysisValidation), 
                             };
 
                             axios.patch(engineData.URI + "/analysis", dataForSAE, { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
-                                res.send({ analysisId: analysis._id, status: "Analysis was updated successfully" });
+                                res.send({ analysisId: response.data.analysisId, status: "Analysis was updated successfully" });
                             }).catch(err => {
                                 console.log(err.response);
-                                res.status(400).send({ analysisId: analysis._id, status: "Analysis can't be updated. Check backend log for more information." });
+                                res.status(400).send({ analysisId: null, status: "Analysis can't be updated. Check backend log for more information." });
                             })
                         }
                         else {
@@ -182,7 +195,7 @@ router.put('/', customMiddleware.isAuthenticated, validate(analysisValidation), 
 
             }
             else {
-                res.status(400).send({ analysisId: data._id, status: "Analysis can't be updated. There is no active engine" });
+                res.status(400).send({ analysisId: null, status: "Analysis can't be updated. There is no active engine" });
             }
         })
     }
@@ -194,52 +207,44 @@ router.put('/', customMiddleware.isAuthenticated, validate(analysisValidation), 
 router.get('/:analysisId', customMiddleware.isAuthenticated, async (req, res) => {
     let analysisId = req.params.analysisId;
 
-    if (mongoose.Types.ObjectId.isValid(analysisId)) {
-        Analysis.findOne({ _id: analysisId })
-            .then(data => {
-                res.send(data);
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).send({ status: "Something went wrong. Check backend logs." });
-            })
-    }
-    else {
-        res.status(400).send({ status: "Invalid Id" });
-    }
+    Analysis.findOne({ id: analysisId })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send({ status: "Something went wrong. Check backend logs." });
+        })
+
 })
 
 router.get('/status/:analysisId', customMiddleware.isAuthenticated, async (req, res) => {
     let analysisId = req.params.analysisId;
 
-    if (mongoose.Types.ObjectId.isValid(analysisId)) {
 
-        helpers.getActiveEngine().then(engineData => {
-            if (engineData) {
-                let localAgent = new https.Agent({
-                    ca: new TextEncoder().encode(engineData.cert)
+    helpers.getActiveEngine().then(engineData => {
+        if (engineData) {
+            let localAgent = new https.Agent({
+                ca: new TextEncoder().encode(engineData.cert)
+            });
+
+            axios.get(engineData.URI + "/analysis/" + analysisId + "/status", { httpsAgent: localAgent, headers: { token: engineData.token } })
+                .then(async (response) => {
+                    res.send(response.data);
+                }).catch(err => {
+                    console.log(err.response);
+                    res.status(400).send({ status: "Something went wrong. Check backend logs." });
                 });
+        }
+        else {
+            res.status(400).send({ status: "There is no active engine" });
+        }
+    })
 
-                axios.get(engineData.URI + "/analysis/" + analysisId + "/status", { httpsAgent: localAgent, headers: { token: engineData.token } })
-                    .then(async (response) => {
-                        res.send(response.data);
-                    }).catch(err => {
-                        console.log(err.response);
-                        res.status(400).send({ status: "Something went wrong. Check backend logs." });
-                    });
-
-            }
-            else {
-                res.status(400).send({ status: "There is no active engine" });
-            }
-        })
-    }
-    else {
-        res.status(400).send({ status: "Invalid Id" });
-    }
 })
 
 router.get('/', customMiddleware.isAuthenticated, async (req, res) => {
+
     Analysis.find({})
         .then(data => {
             res.status(200).send(data);
@@ -247,40 +252,98 @@ router.get('/', customMiddleware.isAuthenticated, async (req, res) => {
         .catch(err => {
             console.log(err);
             res.status(500).send();
-        })
+        });
 })
 
 router.post('/start/:analysisId', customMiddleware.isAuthenticated, async (req, res) => {
     let analysisId = req.params.analysisId;
     let metadata = req.body.metadata;
 
-    if (mongoose.Types.ObjectId.isValid(analysisId)) {
+    // TODO: Combine the analysis data and the user metadata 
+    // TODO: Send the data to the analysis engine and initiate anlysis start
+    // TODO: Return information to the frontend about the operation
 
-        // TODO: Combine the analysis data and the user metadata 
-        // TODO: Send the data to the analysis engine and initiate anlysis start
-        // TODO: Return information to the frontend about the operation
+    helpers.getActiveEngine().then(engineData => {
+        if (engineData) {
+            let localAgent = new https.Agent({
+                ca: new TextEncoder().encode(engineData.cert)
+            });
 
-        helpers.getActiveEngine().then(engineData => {
-            if (engineData) {
-                let localAgent = new https.Agent({
-                    ca: new TextEncoder().encode(engineData.cert)
-                });
+            axios.post(engineData.URI + "/analysis/" + analysisId + "/start/", {}, { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
+                res.send(response.data);
+            }).catch(err => {
+                console.log(err);
+                res.status(400).send({ status: "Analysis start failed. Check backend log for more information." });
+            })
+        }
+        else {
+            res.status(400).send({ status: "There is no active engine" });
+        }
+    });
+})
 
-                axios.post(engineData.URI + "/analysis/" + analysisId + "/start/", {}, { httpsAgent: localAgent, headers: { token: engineData.token } }).then(async (response) => {
-                    res.send(response.data);
+router.post('/subscribe/:analysisId', customMiddleware.isAuthenticated, async (req, res) => {
+    let analysisId = req.params.analysisId;
+
+    helpers.getActiveEngine().then(engineData => {
+        if (engineData) {
+            let localAgent = new https.Agent({
+                ca: new TextEncoder().encode(engineData.cert)
+            });
+
+            axios.post(engineData.URI + "/analysis/" + analysisId + "/subscribe", {}, { httpsAgent: localAgent, headers: { token: engineData.token } })
+                .then(async (response) => {
+                    let analysisResponse = JSON.parse(response.data.analysis);
+
+                    // Let's check if we are already subscribed to this analyisis and skip subscribing a second time if this is the case
+                    helpers.getAnalysisWithIdInEngine(analysisId).then(analysisResult => {
+                        if (analysisResult) {
+                            console.log("Already subscribed to this analysis");
+                            res.send({ analysisId: analysisId, status: "You are already a subscribed." });
+                        }
+                        else {
+                            // Here we extract the policy urls from the policy data, because the SAE returns more information than needed
+                            let analysisPolicies = analysisResponse.policyAnalyses;
+                            let extractedPolyURLs = [];
+                            analysisPolicies.forEach(policy => {
+                                // This points to the model of the policy in the AH
+                                let policyModelUrl = policy.link;
+
+                                // We want to save the URL to the policy in the AH, not the model
+                                // That's we cut the string here (we remove the '/model' part from the model link)
+                                let policyUrl = policyModelUrl.substring(0, policyModelUrl.lastIndexOf('/'));
+
+                                extractedPolyURLs.push(policyUrl);
+                            });
+
+                            let analysis = helpers.createAnalysisiObject(analysisResponse.name, analysisId, "External User", new Date(), analysisResponse.description, analysisResponse.targetSystem, extractedPolyURLs, "plain-data", engineData.URI);
+
+                            analysis.save()
+                                .then(analysisData => {
+                                    res.send({ analysisId: analysisId, status: "Subscribed successfully" });
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    res.status(400).send({ analysisId: null, status: "Analysis subscription failed" });
+                                });
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        res.status(500)
+                            .send({ status: "Check backend log for more information." });
+                    })
+
                 }).catch(err => {
                     console.log(err);
-                    res.status(400).send({ status: "Analysis start failed. Check backend log for more information." });
-                })
-            }
-            else {
-                res.status(400).send({ status: "There is no active engine" });
-            }
-        })
-    }
-    else {
-        res.status(400).send({ status: "Invalid Id" });
-    }
+                    res.status(400)
+                        .send({ status: "Analysis reading failed. Check backend log for more information." });
+                });
+        }
+        else {
+            res.status(400)
+                .send({ analysisId: analysisId, status: "Analysis data can't be accessed. There is no active engine" });
+        }
+    });
 })
 
 router.post('/hub/policy/', customMiddleware.isAuthenticated, async (req, res) => {
@@ -297,7 +360,7 @@ router.post('/hub/policy/', customMiddleware.isAuthenticated, async (req, res) =
         })
         .catch(err => {
             console.log(err)
-            res.status(500).send({ status: "Policy Url Checked Failed" });
+            res.status(500).send({ status: "Policy Url Check Failed" });
         })
 })
 

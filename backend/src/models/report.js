@@ -3,13 +3,10 @@ const { Schema } = mongoose;
 
 const reportSchema = new Schema({
     id: Number,
+    analysisId: Number,
     engineURI: String,
-    analysis: {
-        uuid: String,
-    },
-    startTime: Date,
-    finishTime: Date,
-    policyAnalysisReportSet: [Object]
+    createdAt: Date,
+    
 });
 
 module.exports = mongoose.model('reports', reportSchema);

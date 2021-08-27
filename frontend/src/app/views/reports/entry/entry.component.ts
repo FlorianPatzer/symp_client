@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { IAnalysis } from '../../../interfaces/IAnalysis';
 import { AnalysisService } from '../../../services/analysis.service';
 import { ReportService } from '../../../services/report.service';
 import { TemplatesService } from '../../../services/templates.service';
@@ -14,35 +15,18 @@ import { EmptyComponent } from './templates/empty/empty.component';
 })
 export class EntryComponent {
 
-  templateName;
-  templateKey;
-  report: IReportEntry = { data: null, templateComponent: EmptyComponent };
-  
-  constructor(public templates: TemplatesService, private activeRoute: ActivatedRoute, private router: Router, private toastr: ToastrService ,private reportService: ReportService, private analysisService: AnalysisService) {
-    let reportData = JSON.parse(localStorage.getItem('reportData'));
-    let analysisData = JSON.parse(localStorage.getItem('analysisData'));
-    let template = JSON.parse(localStorage.getItem('template'));
-
-    this.templateKey = template;
-    this.templateName = this.templates.loadNameOf(template);
-
-    if (reportData) {
-      this.report.data = reportData;
-      this.report.templateComponent = this.templates.loadComponentOf(this.templateKey);
-    }
-    else {
-      this.router.navigate(['/reports/overview']);
-      this.toastr.error('Report data is missing','Error')
-    }
+  reportId;
+  constructor(public templates: TemplatesService, private activeRoute: ActivatedRoute, private router: Router, private toastr: ToastrService, private reportService: ReportService, private analysisService: AnalysisService) {
+    this.reportId = this.activeRoute.snapshot.paramMap.get('id');
   }
 
-  delete(){
-    this.reportService.deleteReport(this.report.data._id);
+  delete() {
+    this.reportService.deleteLocal(this.reportId);
     this.router.navigate(['/reports/overview']);
   }
 
-  templateChange(){
-    localStorage.setItem('template', JSON.stringify(this.templateKey));
+  templateChange() {
+    //localStorage.setItem('template', JSON.stringify(this.templateKey));
     window.location.reload();
   }
 

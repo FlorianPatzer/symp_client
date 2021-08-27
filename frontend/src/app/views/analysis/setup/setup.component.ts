@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TemplateRef } from '@angular/core';
@@ -21,6 +21,7 @@ import { AnalysisHubService } from '../../../services/analysis-hub.service';
   styleUrls: ['./setup.component.css']
 })
 export class SetupComponent {
+  @ViewChild('subscriptionModalTemplate', { static: true }) subscriptionModalTemplate: ElementRef;
 
   operation = '';
   modalRef: BsModalRef;
@@ -102,24 +103,34 @@ export class SetupComponent {
       })
   }
 
+  existingAnalysisId;
   doOperation(loadingModal) {
-    let modalRef = this.modalService.open(loadingModal);
+    let loadingModalRef = this.modalService.open(loadingModal);
 
-    if (this.analysis._id) {
+    if (this.analysis.id) {
       this.analysisService.updateAnalysis(this.analysis).then(analysisId => {
-        modalRef.close();
+        loadingModalRef.close();
         this.route.navigate(['analysis/entry/' + analysisId]);
       }).catch(err => {
-        modalRef.close();
+        loadingModalRef.close();
       })
-
     }
     else {
       this.analysisService.createAnalysis(this.analysis).then(analysisId => {
-        modalRef.close();
+        loadingModalRef.close();
         this.route.navigate(['analysis/entry/' + analysisId]);
-      }).catch(err => {
-        modalRef.close();
+      }).catch(errData => {
+        loadingModalRef.close();
+        if (errData != null && errData != undefined) {
+          // TODO: Remove log
+          console.log("Opening modal");
+          this.existingAnalysisId = errData;
+          this.modalRef = this.bsModalService.show(this.subscriptionModalTemplate, { class: 'modal-sm modal-dialog-centered' });
+        }
+        else {
+          // TODO: Remove log
+          console.log("Skip opening modal")
+        }
       })
     }
   }
@@ -128,13 +139,28 @@ export class SetupComponent {
     this.modalRef = this.bsModalService.show(modalTemplate, { class: 'modal-sm modal-dialog-centered' });
   }
 
-  confirm(): void {
-    this.modalRef.hide();
-    this.toastr.info("The operation was canceled.", "Info")
-    this.route.navigate(['analysis/overview'])
+  cancelCreation(self) {
+    self.toastr.info("The operation was canceled.", "Info");
+    self.route.navigate(['analysis/overview']);
   }
 
-  decline(): void {
+  subscribeToAnalysis(self) {
+    self.analysisService.subscribe(self.existingAnalysisId).then(analysisId => {
+      self.route.navigate(['analysis/entry/' + analysisId]);
+    })
+  }
+
+  confirm(callback, self): void {
+    if (typeof callback === 'function') {
+      callback(self);
+    }
+    this.modalRef.hide();
+  }
+
+  decline(callback): void {
+    if (typeof callback === 'function') {
+      callback(self);
+    }
     this.modalRef.hide();
   }
 

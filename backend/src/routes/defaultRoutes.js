@@ -6,9 +6,4 @@ router.get('/', (req, res, next) => {
     res.send("SyMP Backend")
 });
 
-
-router.get('/test', (req, res, next) => {
-    res.send({status:"Endpoint reached"})
-})
-
 module.exports = router;

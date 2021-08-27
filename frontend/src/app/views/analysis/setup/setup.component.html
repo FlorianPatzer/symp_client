@@ -129,8 +129,8 @@
 
       <div class="row mt-3">
         <div class="col-6"><button type="button" class="btn btn-outline-success btn-block"
-            (click)="confirm()">Yes</button></div>
-        <div class="col-6"><button type="button" class="btn btn-warning btn-block" (click)="decline()">No</button></div>
+            (click)="confirm(cancelCreation, this)">Yes</button></div>
+        <div class="col-6"><button type="button" class="btn btn-warning btn-block" (click)="decline(null,this)">No</button></div>
       </div>
     </div>
   </div>
@@ -147,5 +147,29 @@
               <span class="sr-only">Please wait...</span>
           </div>
       </div>
+  </div>
+</ng-template>
+
+<ng-template #subscriptionModalTemplate>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Please confirm</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="decline()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col">
+          Your analysis won't be registered in the current active SAE, because there already exists an analysis with the same policies. Do you wish to add it to your analyses?
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-6"><button type="button" class="btn btn-outline-success btn-block"
+            (click)="confirm(subscribeToAnalysis, this)">Yes</button></div>
+        <div class="col-6"><button type="button" class="btn btn-warning btn-block" (click)="decline(null, this)">No</button></div>
+      </div>
+    </div>
   </div>
 </ng-template>

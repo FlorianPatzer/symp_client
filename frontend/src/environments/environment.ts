@@ -6,6 +6,6 @@
 export const environment = {
   production: false,
   endpoints: {
-    backend: '/api',  // Get handled by proxy.conf.json
+    backend: '/backend',  // Get handled by proxy.conf.json
   }
 };

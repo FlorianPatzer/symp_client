@@ -1,49 +1,49 @@
-# Backend of the SyMP Client
+## About The Project
+Backend of the SyMP Client
 
-## 1. Overview
+### Built With
 
-The backend is running on NodeJS and is built with:
-- Express for fastly exposing server logic on web APIs
-- Mongoose for connecting to and editing entries in Mongo DB
-- Axios for creating request to CRUD APIs
-- Mocha for fast unit tests creation
-- And a couple more smaller npm packages that accelerate the development process 
+* [NodeJs](https://nodejs.org/en/)
+* [Express](https://expressjs.com/)
+* [Mongoose](https://mongoosejs.com/)
+* [Axios](https://axios-http.com/docs/intro)
+* [Mocha](https://mochajs.org/)
+* and other smaller packages
 
+## Getting Started
 
-## 2. Getting started
+### Prerequisites
 
-### 2.1 Setting up endpoints and keys:
+To run the project in DEV mode, make sure you have the latest version of [NodeJs](https://nodejs.org/en/) installed.
 
-1. Mongo DB credentials and connection must be edited in **/src/keys.js**
-2. The addres of the backend server must be configured in **/test/endpoints.js** in order to run unit tests on the instance
-3. Root admin credentials located in **/src/models/setup.js** should also be changed when exposing the app to the world
+Also make sure that your enviromental variables are setup properly:
 
-### 2.2 Running the app in development mode
+1. Mongo DB credentials and connection must be edited in `/src/keys.js` 
+2. An env varible `SERVICE_ADDRESS`, pointing to the service's address must be set when starting the backend.
+3. Root admin credentials located in `/src/models/setup.js` should also be changed for better security
 
-To run the backend in development mode, follow the steps steps:
+### Installation
 
-1. Navigate to the **/backend** folder
-2. Install the needed packages by executing:
+1. Download the repository and install the needed packages by executing the following order in the backend project's directory:
     ```
     npm install
     ```
+
 3. Run the app with:
     ```
-    DEV=true nodemon src
+    SERVICE_ADDRESS=localhost HTTPS=1 DEV=1 nodemon src
     ```
-4. (Optional) To test the app run:
+4. Open https://localhost:3000/backend in your browser and you should see a blank page with the text "SyMP Backend" if the project is started proppely.
+ 
+4. *(Optional)* To test the app run:
     ```
-    DEV=true npm test
+    SERVICE_ADDRESS=localhost HTTPS=0 DEV=1 npm test
     ```
-Note: A running instance of Mongo (respectively a properly configured connection) is needed or every test will fail
+*Note 1: A running instance of Mongo (respectively a properly configured connection) is needed or the server will fail to start*
 
-## 3. API Description:
-The documentation of the REST API is created with the help of [Insomnia](https://insomnia.rest/). The workspace is available as an json file at **/docs/api_insominia_workspace.json** and can be open in the insomnia client and used for direct manual testing.
+*Note 2: Running the project withouth the HTTPS env variable set to true will make the server available over HTTP (i.e. make it non secure)*
 
-Alternatively an exported version of the workspace exists as a web-based API documentation at **/docs/Documentation**. To view it, you need to run a web server that hosts the content of the folder. The easiest to do this is to run the following command in the Documentation folder:
 
-```
-npx serve
-```
+## Usage
 
-*Additional info: The web-based documentation was created with the help of the npm package* **insomnia-documenter**
+The backend implements OpenAPI specification. A Swagger documentations is available in the `docs/refference` folder in the parrent directory.

@@ -64,7 +64,7 @@ app.use((err, req, res, next) => {
 })
 
 let serverType;
-if (process.env.HTTPS) {
+if (process.env.HTTPS == true) {
     console.log("Using HTTPS");
     let privateKey = fs.readFileSync(keys.privateKeyLocation, 'utf8');
     let certificate = fs.readFileSync(keys.certificateLocation, 'utf8');

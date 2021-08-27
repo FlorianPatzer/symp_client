@@ -1,7 +1,7 @@
 import { ITragetSystem } from "./ITragetSystem";
 
 export interface IAnalysis {
-    _id?: string,
+    id?: Number,
     name: string,
     createdBy?: string,
     createdAt?: Date,

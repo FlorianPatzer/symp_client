@@ -1,17 +1,7 @@
 export interface IReport {
     _id: String,
+    id: Number,
+    analysisId: Number,
     engineURI: String,
-    analysis: {
-        uuid: String,
-    },
-    startTime: Date,
-    finishTime: Date,
-    policyAnalysisReportSet: [
-        {
-            report: [Object],
-            policyAnalysis: {
-                name: String,
-            }
-        }
-    ]
+    createdAt: Date,
 }

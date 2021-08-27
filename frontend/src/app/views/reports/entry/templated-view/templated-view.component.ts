@@ -2,6 +2,9 @@ import { Component, ComponentFactoryResolver, Input, OnInit, ViewChild } from '@
 import { IReportEntry } from '../interfaces/IReportEntry';
 import { TemplateDirective } from '../template.directive';
 import { IReportComponent } from '../interfaces/IReportComponent';
+import { ReportService } from '../../../../services/report.service';
+import { AnalysisService } from '../../../../services/analysis.service';
+import { TemplatesService } from '../../../../services/templates.service';
 
 @Component({
   selector: 'app-templated-view',
@@ -9,25 +12,32 @@ import { IReportComponent } from '../interfaces/IReportComponent';
 })
 export class TemplatedViewComponent implements OnInit {
   @Input()
-  report: IReportEntry
+  reportId;
 
-  @ViewChild(TemplateDirective, {static: true}) 
+  @ViewChild(TemplateDirective, { static: true })
   templateHost: TemplateDirective
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
+  constructor(private componentFactoryResolver: ComponentFactoryResolver, private reportService: ReportService, private analysisService: AnalysisService, private templateService: TemplatesService) { }
 
   ngOnInit(): void {
     this.loadComponent();
   }
 
   loadComponent() {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.report.templateComponent);
+    this.reportService.getFromEngine(this.reportId).then(report => {
+      this.analysisService.getAnalysisData(report.analysisId).then(analysis => {
+        let templateComponent = this.templateService.loadComponentOf(analysis.template);
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory<IReportComponent>(templateComponent);
 
-    const viewContainerRef = this.templateHost.viewContainerRef;
-    viewContainerRef.clear();
+        const viewContainerRef = this.templateHost.viewContainerRef;
+        viewContainerRef.clear();
 
-    const componentRef = viewContainerRef.createComponent<IReportComponent>(componentFactory);
-    componentRef.instance.data = this.report.data
+        const componentRef = viewContainerRef.createComponent<IReportComponent>(componentFactory);
+        componentRef.instance.reportData = report;
+        componentRef.instance.analysisData = analysis;
+      })
+
+    })
   }
 
 }

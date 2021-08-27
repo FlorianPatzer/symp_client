@@ -1,3 +1,7 @@
+import { IAnalysis } from "../../../../interfaces/IAnalysis";
+import { IEngineReport } from "../../../../interfaces/IEngineReport";
+
 export interface IReportComponent {
-  data: any;
+  reportData: IEngineReport;
+  analysisData: IAnalysis;
 }

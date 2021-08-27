@@ -5,6 +5,7 @@ import { IReport } from '../../interfaces/IReport';
 import { Router } from '@angular/router';
 import { AnalysisService } from '../../services/analysis.service';
 import { ReportService } from '../../services/report.service';
+import { IEngineReport } from '../../interfaces/IEngineReport';
 
 @Component({
   selector: 'app-reports',
@@ -12,12 +13,22 @@ import { ReportService } from '../../services/report.service';
   styleUrls: ['./reports.component.css']
 })
 export class ReportsComponent implements OnInit {
-  constructor(private http: HttpClient, private toastr: ToastrService, private router: Router, private analysisService: AnalysisService, private reportService: ReportService) { }
+  constructor(private router: Router, public reportService: ReportService) { }
 
+  interval;
+  msBetweenCheck = 3000;
+  
   ngOnInit(): void {
     this.loadReports()
+    this.interval = setInterval(() => {
+      this.loadReports()
+    }, this.msBetweenCheck)
   }
 
+  ngOnDestroy() {
+    clearInterval(this.interval);
+  }
+  
   reports: IReport[];
   REPORTS_COLLECTION = [];
 
@@ -30,19 +41,14 @@ export class ReportsComponent implements OnInit {
   }
 
   loadReports() {
-    this.reportService.getAllReportsData().then((reports) => {
+    this.reportService.getAllLocal().then((reports) => {
       this.REPORTS_COLLECTION = reports;
       this.refreshReportsTable();
     })
   }
 
   async viewEntry(report: IReport) {
-    //TODO: Implement viewing as a modal and remove the saving in local storage, instead pass data directly to the template
-    let analysisData = await this.analysisService.getAnalysisData(report.analysis.uuid);
-    localStorage.setItem('analysisData', JSON.stringify(analysisData));
-    localStorage.setItem('template', JSON.stringify(analysisData.template));
-    localStorage.setItem('reportData', JSON.stringify(report));
-    this.router.navigate(["/reports/entry/" + report._id]);
+    this.router.navigate(["/reports/entry/" + report.id]);
   }
 
 }

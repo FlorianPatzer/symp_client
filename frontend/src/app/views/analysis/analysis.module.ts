@@ -13,6 +13,7 @@ import { EntryComponent } from './entry/entry.component';
 // Collapse Component
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @NgModule({
   imports: [
@@ -24,6 +25,8 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     CollapseModule.forRoot(),
     NgbPaginationModule,
+    NgxSkeletonLoaderModule,
+    
   ],
   declarations: [AnalysisComponent, SetupComponent, EntryComponent],
 })

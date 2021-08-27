@@ -1,7 +1,13 @@
-let address_prod = "https://localhost/api"
-let address_dev = "http://localhost:3000/api"
-
 let address;
+
+// Setup selfAddress
+if (process.env.SERVICE_ADDRESS != undefined || process.env.SERVICE_ADDRESS != null) {
+    address = protocol + "://" + process.env.SERVICE_ADDRESS + ":3000/backend"
+    console.log("Service address is", process.env.SERVICE_ADDRESS);
+}
+else {
+    throw new Error('SERVICE_ADDRESS env variable is missing');
+}
 
 if (process.env.DEV) {
     console.log("Testing the dev server at", address_dev)

@@ -8,6 +8,8 @@ import { PlainDataComponent } from '../views/reports/entry/templates/plain-data/
 })
 export class TemplatesService {
 
+  private defaultKey = "plain-data";
+
   private templates: ITemplate[] = [
     { name: "Test Template", key: "test-template", component: TestComponent },
     { name: "Plain Data", key: "plain-data", component: PlainDataComponent }
@@ -53,5 +55,9 @@ export class TemplatesService {
     }
 
     return name;
+  }
+
+  getDefaultKey(){
+    return this.defaultKey;
   }
 }

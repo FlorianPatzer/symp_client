@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import {NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import {NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     NgbPaginationModule, NgbAlertModule,
     ReactiveFormsModule,
+    NgxSkeletonLoaderModule,
   ],
   declarations: [ DashboardComponent ]
 })

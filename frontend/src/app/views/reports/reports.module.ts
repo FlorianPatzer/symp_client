@@ -11,7 +11,7 @@ import { TestComponent } from './entry/templates/test/test.component';
 import { EmptyComponent } from './entry/templates/empty/empty.component';
 import { PlainDataComponent } from './entry/templates/plain-data/plain-data.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @NgModule({
   declarations: [ReportsComponent, EntryComponent, TemplatedViewComponent, TemplateDirective, TestComponent, EmptyComponent, PlainDataComponent],
@@ -21,6 +21,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NgbPaginationModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxSkeletonLoaderModule,
+    
   ],
   entryComponents: [TestComponent, EmptyComponent, PlainDataComponent]
 })

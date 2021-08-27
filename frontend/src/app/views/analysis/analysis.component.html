@@ -30,11 +30,28 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr *ngIf="loadingData">
+                        <td>
+                            <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                        </td>
+                        <td>
+                            <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                        </td>
+                        <td>
+                            <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                        </td>
+                    </tr>
                     <tr *ngFor="let analysis of analyses; index as i" (click)="view(analysis)">
                         <td>
-                            <span
-                                [ngClass]="{'badge badge-success': analysisStatus[i] === 'Running', 'badge badge-secondary': analysisStatus[i] === 'Idle'}"
-                                style="font-size: 0.9em; width:60%;">{{analysisStatus[i]}}</span>
+                            <span *ngIf="analysisStatus[i] === 'Running'; else idle">
+                                <span class="badge badge-success"
+                                    style="font-size: 0.9em; width:60%;">{{analysisStatus[i]}}</span>
+                            </span>
+
+                            <ng-template #idle>
+                                <span class="badge badge-secondary"
+                                    style="font-size: 0.9em; width:60%;">{{analysisStatus[i]}}</span>
+                            </ng-template>
                         </td>
                         <td>{{analysis.name}}</td>
                         <td>{{analysis.description}}</td>

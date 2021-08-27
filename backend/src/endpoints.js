@@ -3,20 +3,19 @@ let selfAddress;
 let certsLocation;
 let protocol;
 
+certsLocation = "ssl"
+
 if (process.env.DEV) {
     console.log("Starting in development mode")
     dbAddress = "localhost:27017"
-    certsLocation = "ssl"
 }
 else if (process.env.RANCHER) {
     console.log("Starting in rancher mode")
     dbAddress = "symp-mongo:27017"
-    certsLocation = "ssl_rancher"
 }
 else {
     console.log("Starting in production mode")
     dbAddress = "symp-mongo:27017"
-    certsLocation = "ssl"
 }
 
 // Setup protocol

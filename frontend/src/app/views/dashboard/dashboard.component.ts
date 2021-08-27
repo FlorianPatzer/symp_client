@@ -13,6 +13,9 @@ import { BackendResolverService } from '../../services/backend-resolver.service'
 export class DashboardComponent implements OnInit, OnDestroy {
 
   settings: ISettings;
+  interval;
+  msBetweenCheck = 3000;
+  loadingData = true;
 
   private backendAddress = "";
 
@@ -30,17 +33,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.backendAddress = backendResolver.getBackendUrl();
   }
 
-  ngOnInit(): void {
-    // TODO: Set interval to load data
+  loadData() {
+    this.loadDefinitions();
+    this.loadInstances();
+    this.loadingData = false;
+  }
+
+  updateData() {
     this.settingsService.getSettings().then(settings => {
       this.settings = settings;
-      this.loadDefinitions();
-      this.loadInstances();
-    })
+      this.loadData()
+    });
+  }
+
+  ngOnInit(): void {
+    this.updateData();
+    this.interval = setInterval(() => {
+      this.updateData();
+    }, this.msBetweenCheck)
   }
 
   ngOnDestroy() {
-    // TODO: Clear Intervals
+    clearInterval(this.interval);
   }
 
   doOperation = ""
@@ -142,7 +156,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteInstance(self, instanceId) {
-    self.http.delete(this.backendAddress + "/proxy/camunda/engine-rest/process-instance/" + instanceId, {}).subscribe(
+    self.http.delete(self.backendAddress + "/proxy/camunda/engine-rest/process-instance/" + instanceId, {}).subscribe(
       res => {
         self.toastr.success('Instance deleted successfully', 'Deleted');
         self.loadInstances();
@@ -154,7 +168,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteDefinition(self, processId) {
-    self.http.delete(this.backendAddress + "/proxy/camunda/engine-rest/deployment/" + processId, { params: { cascade: "true", } }).subscribe(
+    self.http.delete(self.backendAddress + "/proxy/camunda/engine-rest/deployment/" + processId, { params: { cascade: "true", } }).subscribe(
       res => {
         self.toastr.success('Deployment deleted successfully', 'Deleted');
         self.loadDefinitions();

@@ -10,6 +10,7 @@
                         <strong class="h4">{{DEFINITIONS_COLLECTION.length}}</strong>
                     </div>
                 </div>
+
                 <div class="card-body">
                     <table class="table table-responsive-sm table-borderless table-sm">
                         <thead>
@@ -19,10 +20,18 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr *ngIf="loadingData">
+                                <td>
+                                    <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                                </td>
+                                <td>
+                                    <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                                </td>
+                            </tr>
                             <tr *ngFor="let definition of definitions">
                                 <td>{{definition.key}}</td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-success btn-sm"
+                                    <button type="button" class="btn btn-success btn-sm mr-2"
                                         (click)="startInstance(definition.id)">Start</button>
                                     <button class="btn btn-sm btn-danger"
                                         (click)="openConfirmationModal(content, 'delete the selected deployment', deleteDefinition, definition.deploymentId)">Delete</button>
@@ -36,15 +45,6 @@
                     <ngb-pagination [collectionSize]="DEFINITIONS_COLLECTION.length" [(page)]="definitionsPage"
                         [pageSize]="pageSize" (pageChange)="refreshDefinitionsTable()">
                     </ngb-pagination>
-
-                    <!--
-                        <select class="custom-select" style="width: auto" [(ngModel)]="pageSize"
-                        (ngModelChange)="refreshDefinitions()">
-                        <option [ngValue]="2">2 items per page</option>
-                        <option [ngValue]="4">4 items per page</option>
-                        <option [ngValue]="6">6 items per page</option>
-                        </select>
-                    -->
                 </div>
             </div>
         </div>
@@ -94,6 +94,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr *ngIf="loadingData">
+                                <td>
+                                    <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                                </td>
+                                <td>
+                                    <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                                </td>
+                                <td>
+                                    <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                                </td>
+                                <td>
+                                    <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+                                </td>
+                            </tr>
                             <tr *ngFor="let instance of instances">
                                 <td>{{instance.startTime | date:'short'}}</td>
                                 <td>{{instance.processDefinitionKey}}</td>
@@ -111,15 +125,15 @@
                                     </ng-template>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-primary btn-sm"
+                                    <button type="button" class="btn btn-primary btn-sm ml-2"
                                         (click)="copyToClipboard(instance.id)">Copy ID</button>
-                                    <button type="button" class="btn btn-warning btn-sm"
+                                    <button type="button" class="btn btn-warning btn-sm ml-2"
                                         *ngIf="instance.state==='ACTIVE'"
                                         (click)="suspendInstance(instance.id, true)">Suspend</button>
-                                    <button type="button" class="btn btn-primary btn-sm"
+                                    <button type="button" class="btn btn-primary btn-sm ml-2"
                                         *ngIf="instance.state==='SUSPENDED'"
                                         (click)="suspendInstance(instance.id, false)">Resume</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
+                                    <button type="button" class="btn btn-danger btn-sm ml-2"
                                         (click)="openConfirmationModal(content, 'delete the selected instance', deleteInstance, instance.id)">Delete</button>
                                 </td>
                             </tr>
@@ -130,15 +144,6 @@
                     <ngb-pagination [collectionSize]="INSTACES_COLLECTION.length" [(page)]="instancesPage"
                         [pageSize]="pageSize" (pageChange)="refreshInstancesTable()">
                     </ngb-pagination>
-
-                    <!--
-                        <select class="custom-select" style="width: auto" [(ngModel)]="pageSize"
-                        (ngModelChange)="refreshInstances()">
-                        <option [ngValue]="2">2 items per page</option>
-                        <option [ngValue]="4">4 items per page</option>
-                        <option [ngValue]="6">6 items per page</option>
-                        </select>
-                    -->
                 </div>
             </div>
         </div>

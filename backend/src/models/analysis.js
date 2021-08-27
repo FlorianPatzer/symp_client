@@ -9,6 +9,7 @@ const analysisSchema = new Schema ({
     targetSystemId: String,
     template: String,
     engineURI: String,
+    id: Number,
     containedPolicies: [String]
 });
 

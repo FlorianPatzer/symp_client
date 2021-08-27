@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { IAnalysis } from '../../../../../interfaces/IAnalysis';
+import { IEngineReport } from '../../../../../interfaces/IEngineReport';
 import { IReport } from '../../../../../interfaces/IReport';
 import { IReportComponent } from '../../interfaces/IReportComponent';
 
@@ -9,7 +11,8 @@ import { IReportComponent } from '../../interfaces/IReportComponent';
 })
 export class TestComponent implements OnInit, IReportComponent {
   @Input()
-  data: IReport;
+  reportData: IEngineReport;
+  analysisData: IAnalysis;
 
   constructor() {
 
@@ -17,7 +20,7 @@ export class TestComponent implements OnInit, IReportComponent {
 
   ngOnInit(): void {
     console.log("Test Template loaded");
-    console.log(this.data);
+    console.log(this.reportData);
   }
 
 }

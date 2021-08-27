@@ -1,38 +1,44 @@
-# Frontend of the SyMP Client
-GUI for the SyMP Framework implemented as an Angular WebApp  
-Currently built with the free version of [CoreUI Framework](https://coreui.io/)
+## About The Project
+The fronted for the SyMP client
 
-## 1. Getting started
-The projects uses the free version of CoreUI as a base template for the implementation of the GUI features. More about the CoreUI project can be found in the [project website](https://coreui.io/angular/) or in the official [github repo](https://github.com/coreui/coreui-free-angular-admin-template).
+### Built With
 
-### 1.1 Prerequisites
-- node 
-- npm
+* [Angular](https://angular.io/)
+* [CoreUI Framework](https://coreui.io/)
 
-### 1.2 Running the application
+## Getting Started
 
- 1. Clone the repo and navigate to it's root directory
-    
- 2. Install the project dependencies by executing:
+
+### Prerequisites
+
+To run the project in DEV mode, make sure you have the latest version of [NodeJs](https://nodejs.org/en/) installed.
+
+Also make sure that your enviromental variables are setup properly:
+* Make sure the right addresses are set in the environment files located at `/src/environments/` folder.
+
+### Installation
+
+1. Download the repository and install the needed packages by executing the following order in the frontend project's directory:
     ```
     npm install
     ```
-3. Configure the endpoint locations in env config files in **/src/environments/**:
 
-4. Start the app localy in development mode by executing:
+2. Start the app localy in development mode by executing:
     ```
     ng serve
     ```
 
-Note: The local enviroment is running at **http://localhost:4200**
+## Usage
 
-Default credentials:
+1. Navigate to http://localhost:4200
 
-User: admin
+2. Login with the default credentials (if not changed):
+   ```
+   User: admin
+   Password: admin
+   ```
 
-Password: admin
-
-The backend part of the SyMP client project must be running in order to login and use the frontend.
+*Note: Make sure the backend is running propperly before trying to log in.*
 
 
 ## License

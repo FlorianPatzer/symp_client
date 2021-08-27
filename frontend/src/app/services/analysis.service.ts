@@ -89,14 +89,22 @@ export class AnalysisService {
         resolve(res.analysisId)
       },
         err => {
-          console.log(err.error.status);
+          let rejectData = null;
           try {
             this.toastr.error(err.error.details.body[0].message, 'Error');
           }
           catch (e) {
-            this.toastr.error(err.error.status, 'Error');
+            let statusCode = err.status;
+            console.log(err.error);
+            if(statusCode == 409){
+              this.toastr.warning(err.error.status, 'Warning');
+              rejectData = err.error.analysisId;
+            }
+            else{
+              this.toastr.error(err.error.status, 'Error');
+            }
           }
-          reject(null);
+          reject(rejectData);
         })
     })
   }
@@ -128,6 +136,18 @@ export class AnalysisService {
       }, err => {
         rejects(false);
         this.toastr.error(err.error.status, 'Error');
+      });
+    });
+  }
+
+  subscribe(analysisId){
+    return new Promise((resolve, reject) => {
+      this.http.post(this.backendAddress + '/analysis/subscribe/' + analysisId, {}).subscribe((res: IBackendResponse) => {
+        this.toastr.success(res.status, 'Success');
+        resolve(res.analysisId);
+      }, err => {
+        this.toastr.error(err.error.status, 'Error');
+        reject(null);
       });
     });
   }

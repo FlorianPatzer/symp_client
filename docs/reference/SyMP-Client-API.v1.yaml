@@ -253,6 +253,22 @@ paths:
                     type: string
                 required:
                   - status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
           content:
@@ -517,6 +533,38 @@ paths:
                 required:
                   - status
                   - reportId
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
           content:
@@ -586,6 +634,22 @@ paths:
                     type: string
                 required:
                   - status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
           content:
@@ -627,6 +691,22 @@ paths:
                     type: string
                 required:
                   - status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
           content:
@@ -689,6 +769,24 @@ paths:
                     uuid:
                       type: string
                       minLength: 1
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '500':
+          description: Internal Server Error
       operationId: get-engine
       security:
         - sessionCookie: []
@@ -699,6 +797,68 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
   /engine/status:
     get:
       summary: Your GET endpoint
@@ -715,8 +875,24 @@ paths:
                     type: string
                 required:
                   - status
-        '400':
-          description: Bad Request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '500':
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -763,6 +939,22 @@ paths:
                     type: string
                 required:
                   - status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
       operationId: get-engine-status-id
       description: Get the app status in the specified engine
       security:
@@ -797,6 +989,22 @@ paths:
                     type: string
                   '':
                     type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
           content:
@@ -882,6 +1090,22 @@ paths:
                     type: string
                 required:
                   - status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
           content:
@@ -994,6 +1218,38 @@ paths:
                       items:
                         required: []
                         properties: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
       description: Get all analyses
@@ -1055,10 +1311,83 @@ paths:
                   - template
                   - engineURI
                   - containedPolicies
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
       operationId: get-analysis-id
       description: Get the data of the specified analysis
+      security:
+        - sessionCookie: []
+    delete:
+      summary: ''
+      operationId: delete-analysis-id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+      description: Get the specified analysis
       security:
         - sessionCookie: []
   '/analysis/start/{analysisId}':
@@ -1115,6 +1444,38 @@ paths:
                   - template
                   - engineURI
                   - containedPolicies
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
         '500':
           description: Internal Server Error
           content:
@@ -1129,6 +1490,318 @@ paths:
       description: Start created analysis
       security:
         - sessionCookie: []
+  '/analysis/status/{analysisId}':
+    parameters:
+      - schema:
+          type: string
+        name: analysisId
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    status: There is no active engine
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+              examples:
+                example-1:
+                  value: {}
+            application/xml:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    status: status
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                  '':
+                    type: string
+                required:
+                  - status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+      operationId: get-analysis-status-analysisId
+      security:
+        - sessionCookie: []
+  /analysis/hub/policy/:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  id:
+                    type: number
+                  uri:
+                    type: string
+                    minLength: 1
+                  localName:
+                    type: string
+                    minLength: 1
+                  modelLink:
+                    type: string
+                    minLength: 1
+                  description:
+                    type: string
+                    minLength: 1
+                  lastChanged:
+                    type: object
+                    properties: {}
+                    required: []
+                  policyUrl:
+                    type: string
+                    minLength: 1
+                required:
+                  - id
+                  - uri
+                  - localName
+                  - modelLink
+                  - description
+                  - lastChanged
+                  - policyUrl
+                x-examples:
+                  example-1:
+                    id: 0
+                    uri: string
+                    localName: string
+                    modelLink: string
+                    description: string
+                    lastChanged: {}
+                    policyUrl: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+      operationId: get-analysis-hub
+      requestBody:
+        content:
+          text/html:
+            schema:
+              type: object
+              properties: {}
+          application/json:
+            schema:
+              type: object
+              properties: {}
+        description: Send the policy URL
+      security:
+        - sessionCookie: []
+    parameters: []
+  /settings:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  endpoints:
+                    type: object
+                    properties:
+                      camunda:
+                        type: string
+                        minLength: 1
+                      sme:
+                        type: string
+                        minLength: 1
+                      ah:
+                        type: string
+                        minLength: 1
+                    required:
+                      - camunda
+                      - sme
+                      - ah
+                required:
+                  - endpoints
+                x-examples:
+                  example-1:
+                    endpoints:
+                      camunda: string
+                      sme: string
+                      ah: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+      operationId: get-settings
+      description: Get user settings from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      security:
+        - sessionCookie: []
+    post:
+      summary: ''
+      operationId: post-settings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: status
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  status:
+                    type: string
+                    minLength: 1
+                required:
+                  - status
+                x-examples:
+                  example-1:
+                    status: 'status:'
+      description: Update user settings in database
+      security:
+        - sessionCookie: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                endpoints:
+                  type: object
+                  properties:
+                    camunda:
+                      type: string
+                      minLength: 1
+                    sme:
+                      type: string
+                      minLength: 1
+                    ah:
+                      type: string
+                      minLength: 1
+                  required:
+                    - camunda
+                    - sme
+                    - ah
+              required:
+                - endpoints
+              x-examples:
+                example-1:
+                  endpoints:
+                    camunda: string
+                    sme: string
+                    ah: string
 components:
   schemas:
     User:
@@ -1241,6 +1914,61 @@ components:
           type: array
           items: {}
       x-examples: {}
+    Policy:
+      description: ''
+      type: object
+      x-examples: {}
+      properties:
+        id:
+          type: number
+        uri:
+          type: string
+          minLength: 1
+        localName:
+          type: string
+          minLength: 1
+        modelLink:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        lastChanged:
+          type: object
+        policyUrl:
+          type: string
+          minLength: 1
+      required:
+        - id
+        - uri
+        - localName
+        - modelLink
+        - description
+        - lastChanged
+      title: ''
+    Settings:
+      description: ''
+      type: object
+      x-examples: {}
+      properties:
+        endpoints:
+          type: object
+          required:
+            - camunda
+            - sme
+            - ah
+          properties:
+            camunda:
+              type: string
+              minLength: 1
+            sme:
+              type: string
+              minLength: 1
+            ah:
+              type: string
+              minLength: 1
+      required:
+        - endpoints
   securitySchemes:
     token:
       name: JWT for the analysis engine generated at app registration
